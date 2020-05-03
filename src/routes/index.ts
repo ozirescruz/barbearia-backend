@@ -1,9 +1,8 @@
 import { Router } from "express";
+import appoitmentsRouter from "./appoitments.route";
 
 const routes = Router();
 
-routes.get("/", (request, response) =>
-  response.json({ message: "Hello World!" })
-);
+routes.use("/appoitments", appoitmentsRouter);
 
 export default routes;

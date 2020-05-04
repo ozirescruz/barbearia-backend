@@ -1,14 +1,9 @@
 import { Router } from "express";
-import { uuid } from "uuidv4";
 import { startOfHour, parseISO, isEqual } from "date-fns";
 
-const appoitmentsRouter = Router();
+import Appoitment from "../models/Appoitment";
 
-interface Appoitment {
-  id: string;
-  provider: string;
-  date: Date;
-}
+const appoitmentsRouter = Router();
 
 const appoitments: Appoitment[] = [];
 
@@ -23,11 +18,7 @@ appoitmentsRouter.post("/", (request, response) => {
     return response.status(400).json({ error: "Day/Hour already booked!" });
   }
 
-  const appoitment = {
-    id: uuid(),
-    provider,
-    date: parsedDate,
-  };
+  const appoitment = new Appoitment(provider, parsedDate);
 
   appoitments.push(appoitment);
 

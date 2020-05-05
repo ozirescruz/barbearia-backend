@@ -21,7 +21,9 @@ appoitmentsRouter.post('/', (request, response) => {
 });
 
 appoitmentsRouter.get('/', (request, response) => {
-  return response.json({ message: 'GET...' });
+  const appoitments = appoitmentsRepository.all();
+
+  return response.json(appoitments);
 });
 
 export default appoitmentsRouter;

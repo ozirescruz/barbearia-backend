@@ -15,7 +15,10 @@ appoitmentsRouter.post('/', (request, response) => {
     return response.status(400).json({ error: 'Day/Hour already booked!' });
   }
 
-  const appoitment = appoitmentsRepository.create(provider, parsedDate);
+  const appoitment = appoitmentsRepository.create({
+    provider,
+    date: parsedDate,
+  });
 
   return response.json({ appoitment });
 });

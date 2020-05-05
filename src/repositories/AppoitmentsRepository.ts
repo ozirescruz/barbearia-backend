@@ -1,6 +1,10 @@
 import { isEqual } from 'date-fns';
 import Appoitment from '../models/Appoitment';
 
+interface CreateAppoitmentDTO {
+  provider: string;
+  date: Date;
+}
 class AppoitmentsRepository {
   private appoitments: Appoitment[];
 
@@ -20,8 +24,8 @@ class AppoitmentsRepository {
     return findAppoitment || null;
   }
 
-  public create(provider: string, date: Date): Appoitment {
-    const appoitment = new Appoitment(provider, date);
+  public create({ provider, date }: CreateAppoitmentDTO): Appoitment {
+    const appoitment = new Appoitment({ provider, date });
 
     this.appoitments.push(appoitment);
 

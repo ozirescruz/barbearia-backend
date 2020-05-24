@@ -1,4 +1,9 @@
-import { MigrationInterface, QueryRunner, Table } from 'typeorm';
+import {
+  MigrationInterface,
+  QueryRunner,
+  Table,
+  TableForeignKey,
+} from 'typeorm';
 
 export default class CreateAppoitments1589326717523
   implements MigrationInterface {
@@ -9,15 +14,15 @@ export default class CreateAppoitments1589326717523
         columns: [
           {
             name: 'id',
-            type: 'varchar',
+            type: 'uuid',
             isPrimary: true,
             generationStrategy: 'uuid',
             default: 'uuid_generate_v4()',
           },
           {
-            name: 'provider',
-            type: 'varchar',
-            isNullable: false,
+            name: 'provider_id',
+            type: 'uuid',
+            isNullable: true,
           },
           {
             name: 'date',
@@ -37,6 +42,19 @@ export default class CreateAppoitments1589326717523
         ],
       }),
     );
+    /*
+    // clear sqls in memory to avoid removing tables when down queries executed.
+    queryRunner.clearSqlMemory();
+
+    const foreignKey = new TableForeignKey({
+      columnNames: ['provider_id'],
+      referencedColumnNames: ['id'],
+      referencedTableName: 'users',
+      onDelete: 'CASCADE',
+    });
+
+    await queryRunner.createForeignKey('appoitments', foreignKey);
+    */
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {

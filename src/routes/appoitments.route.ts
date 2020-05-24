@@ -1,23 +1,29 @@
 import { Router } from 'express';
 import { parseISO } from 'date-fns';
+import { getCustomRepository } from 'typeorm';
 
 import AppoitmentsRepository from '../repositories/AppoitmentsRepository';
 import CreateAppoitmentService from '../services/CreateAppoitmentService';
+import Appoitment from '../models/Appoitment';
 
 const appoitmentsRouter = Router();
-const appoitmentsRepository = new AppoitmentsRepository();
 
-appoitmentsRouter.post('/', (request, response) => {
+appoitmentsRouter.get('/', async (request, response) => {
+  const appoitmentsRepository = getCustomRepository(AppoitmentsRepository);
+  const appoitments = await appoitmentsRepository.find();
+
+  return response.json(appoitments);
+});
+
+appoitmentsRouter.post('/', async (request, response) => {
   const { provider, date } = request.body;
   const parsedDate = parseISO(date);
-  const createAppoitmentService = new CreateAppoitmentService(
-    appoitmentsRepository,
-  );
+  const createAppoitmentService = new CreateAppoitmentService();
 
   let appoitment = null;
 
   try {
-    appoitment = createAppoitmentService.execute({
+    appoitment = await createAppoitmentService.execute({
       provider,
       date: parsedDate,
     });
@@ -26,12 +32,6 @@ appoitmentsRouter.post('/', (request, response) => {
   }
 
   return response.json({ appoitment });
-});
-
-appoitmentsRouter.get('/', (request, response) => {
-  const appoitments = appoitmentsRepository.all();
-
-  return response.json(appoitments);
 });
 
 export default appoitmentsRouter;

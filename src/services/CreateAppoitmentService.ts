@@ -1,4 +1,5 @@
 import { startOfHour } from 'date-fns';
+import { getCustomRepository } from 'typeorm';
 
 import AppoitmentsRepository from '../repositories/AppoitmentsRepository';
 import Appoitment from '../models/Appoitment';
@@ -9,16 +10,11 @@ interface Request {
 }
 
 class CreateAppoitmentService {
-  private appoitmentsRepository: AppoitmentsRepository;
-
-  constructor(appoitmentsRepository: AppoitmentsRepository) {
-    this.appoitmentsRepository = appoitmentsRepository;
-  }
-
-  public execute({ provider, date }: Request): Appoitment {
+  public async execute({ provider, date }: Request): Promise<Appoitment> {
+    const appoitmentsRepository = getCustomRepository(AppoitmentsRepository);
     const appoitmentDate = startOfHour(date);
 
-    const findAppoitmentInSameDate = this.appoitmentsRepository.findByDate(
+    const findAppoitmentInSameDate = await appoitmentsRepository.findByDate(
       appoitmentDate,
     );
 
@@ -26,10 +22,12 @@ class CreateAppoitmentService {
       throw Error('Day/Hour already booked!');
     }
 
-    const appoitment = this.appoitmentsRepository.create({
+    const appoitment = appoitmentsRepository.create({
       provider,
       date: appoitmentDate,
     });
+
+    await appoitmentsRepository.save(appoitment);
 
     return appoitment;
   }

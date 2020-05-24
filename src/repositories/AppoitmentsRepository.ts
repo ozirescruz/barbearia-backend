@@ -1,35 +1,14 @@
-import { isEqual } from 'date-fns';
+import { EntityRepository, Repository } from 'typeorm';
 import Appoitment from '../models/Appoitment';
 
-interface CreateAppoitmentDTO {
-  provider: string;
-  date: Date;
-}
-class AppoitmentsRepository {
-  private appoitments: Appoitment[];
-
-  constructor() {
-    this.appoitments = [];
-  }
-
-  public all(): Appoitment[] {
-    return this.appoitments;
-  }
-
-  public findByDate(date: Date): Appoitment | null {
-    const findAppoitment = this.appoitments.find(appoitment =>
-      isEqual(date, appoitment.date),
-    );
+@EntityRepository(Appoitment)
+class AppoitmentsRepository extends Repository<Appoitment> {
+  public async findByDate(date: Date): Promise<Appoitment | null> {
+    const findAppoitment = await this.findOne({
+      where: { date },
+    });
 
     return findAppoitment || null;
-  }
-
-  public create({ provider, date }: CreateAppoitmentDTO): Appoitment {
-    const appoitment = new Appoitment({ provider, date });
-
-    this.appoitments.push(appoitment);
-
-    return appoitment;
   }
 }
 

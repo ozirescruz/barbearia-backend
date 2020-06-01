@@ -4,9 +4,11 @@ import { getCustomRepository } from 'typeorm';
 
 import AppoitmentsRepository from '../repositories/AppoitmentsRepository';
 import CreateAppoitmentService from '../services/CreateAppoitmentService';
-import Appoitment from '../models/Appoitment';
+import ensureAuthenticated from '../middlewares/ensureAuthenticated';
 
 const appoitmentsRouter = Router();
+
+appoitmentsRouter.use(ensureAuthenticated);
 
 appoitmentsRouter.get('/', async (request, response) => {
   const appoitmentsRepository = getCustomRepository(AppoitmentsRepository);
@@ -16,7 +18,7 @@ appoitmentsRouter.get('/', async (request, response) => {
 });
 
 appoitmentsRouter.post('/', async (request, response) => {
-  const { provider, date } = request.body;
+  const { provider_id, date } = request.body;
   const parsedDate = parseISO(date);
   const createAppoitmentService = new CreateAppoitmentService();
 
@@ -24,7 +26,7 @@ appoitmentsRouter.post('/', async (request, response) => {
 
   try {
     appoitment = await createAppoitmentService.execute({
-      provider,
+      provider_id,
       date: parsedDate,
     });
   } catch (error) {

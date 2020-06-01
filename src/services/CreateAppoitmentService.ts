@@ -5,12 +5,12 @@ import AppoitmentsRepository from '../repositories/AppoitmentsRepository';
 import Appoitment from '../models/Appoitment';
 
 interface Request {
-  provider: string;
+  provider_id: string;
   date: Date;
 }
 
 class CreateAppoitmentService {
-  public async execute({ provider, date }: Request): Promise<Appoitment> {
+  public async execute({ provider_id, date }: Request): Promise<Appoitment> {
     const appoitmentsRepository = getCustomRepository(AppoitmentsRepository);
     const appoitmentDate = startOfHour(date);
 
@@ -23,7 +23,7 @@ class CreateAppoitmentService {
     }
 
     const appoitment = appoitmentsRepository.create({
-      provider,
+      provider_id,
       date: appoitmentDate,
     });
 
